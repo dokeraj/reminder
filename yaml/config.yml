@@ -1,0 +1,30 @@
+general_settings:
+  ## MANDATORY. You Discord webhook API key
+  discord_api_key: "<INSERT YOUR DISCORD WEBHOOK API KEY>"
+
+
+## This is the schedule when you want the script to run and call the Reminder message. You can create as many reminders as you'd like
+reminder_schedule:
+  ## DELETE IF NOT NEEDED
+  cron:
+    - message: "<INPUT YOUR REMINDER HERE>"
+
+      ## Use the numbers from 1-12 or *
+      month: "<INPUT MONTH HERE>"
+
+      ## available values are numbers from 1 to 31 or *
+      day: "<INPUT DAY HERE>"
+
+      ## Use HH:mm format and wrap the time in quatation marks e.g. "14:28"
+      time: "<HH:mm>"
+
+      ## available values are MON, TUE, WED, THU, FRI, SAT, SUN or *
+      day_of_week: "<INPUT DAY OF WEEK HERE>"
+
+
+  ## DELETE IF NOT NEEDED
+  last_day_of_month:
+    - message: "<INPUT YOUR REMINDER HERE>"
+
+      ## Use HH:mm format and wrap the time in quatation marks e.g. "14:28"
+      time: "<HH:mm>"
