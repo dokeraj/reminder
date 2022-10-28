@@ -132,7 +132,7 @@ def printSetConfig():
             resultStr += f"\t- cron.hour = {item.hour}\n"
             resultStr += f"\t- cron.minute = {item.minute}\n"
             resultStr += f"\t- cron.dayOfWeek = {item.dayOfWeek}\n"
-            resultStr += "\n"
+            resultStr += "\n\n"
 
     if conf.lastDayOfMonthSchedule is not None:
         for idx, item in enumerate(conf.lastDayOfMonthSchedule):
@@ -140,7 +140,7 @@ def printSetConfig():
             resultStr += f"\t- last_day_of_month.message = {item.message}\n"
             resultStr += f"\t- last_day_of_month.hour = {item.hour}\n"
             resultStr += f"\t- last_day_of_month.minute = {item.minute}\n"
-            resultStr += "\n"
+            resultStr += "\n\n"
 
     if conf.fortnight is not None:
         resultStr += f"\t---- fortnight ----\n"
@@ -149,7 +149,7 @@ def printSetConfig():
         resultStr += f"\t- fortnight.hour = {conf.fortnight.hour}\n"
         resultStr += f"\t- fortnight.minute = {conf.fortnight.minute}\n"
         resultStr += f"\t- fortnight.dayOfWeek = {conf.fortnight.dayOfWeek}\n"
-        resultStr += "\n"
+        resultStr += "\n\n"
 
     resultStr += "\n\nNOTE: DON'T FORGET THAT IF YOU MAKE ANY CHANGE TO THE YAML FILE - YOU WILL NEED TO RESTART THIS CONTAINER!!"
     print(resultStr)
