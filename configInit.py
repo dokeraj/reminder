@@ -26,14 +26,24 @@ class ConfTime:
 
 
 @dataclass
+class FortniteSchedule:
+    message: str
+    weekType: str
+    hour: int
+    minute: int
+    dayOfWeek: str
+
+
+@dataclass
 class Config:
     tz: str
     discordApiKey: str
     cron: list[ConfSchedule]
     lastDayOfMonthSchedule: list[ConfTime]
+    fortnight: FortniteSchedule
 
 
-conf = Config(None, None, list(), list())
+conf = Config(None, None, list(), list(), None)
 
 
 def extractCronTimeArray(item):
@@ -43,7 +53,7 @@ def extractCronTimeArray(item):
             if cronVal != "<INPUT YOUR REMINDER HERE>":
                 cronSchedule.message = cronVal
             else:
-                errMsg = "ERROR: Reminder message format is not setup! Put your reminder message!"
+                errMsg = "ERROR: Cron Reminder message is not setup! Put your CRON reminder message!"
                 print(f"{errMsg} Now exiting!")
                 sys.exit()
         if croneKey == "month":
@@ -92,7 +102,7 @@ def extractLastDayOfMonthArray(item):
             if lastDayVal != "<INPUT YOUR REMINDER HERE>":
                 lastDaySchedule.message = lastDayVal
             else:
-                errMsg = "ERROR: Reminder message format is not setup! Put your reminder message!"
+                errMsg = "ERROR: Last Day Of Month Reminder message format is not setup! Put your reminder message!"
                 print(f"{errMsg} Now exiting!")
                 sys.exit()
         if lastDayKey == "time":
@@ -115,7 +125,7 @@ def printSetConfig():
     resultStr += f"Backup Schedule:\n"
     if conf.cron is not None:
         for idx, item in enumerate(conf.cron):
-            resultStr += f"\t---- cron {idx+1} ----\n"
+            resultStr += f"\t---- cron {idx + 1} ----\n"
             resultStr += f"\t- cron.message = {item.message}\n"
             resultStr += f"\t- cron.month = {item.month}\n"
             resultStr += f"\t- cron.day = {item.day}\n"
@@ -131,6 +141,15 @@ def printSetConfig():
             resultStr += f"\t- last_day_of_month.hour = {item.hour}\n"
             resultStr += f"\t- last_day_of_month.minute = {item.minute}\n"
             resultStr += "\n"
+
+    if conf.fortnight is not None:
+        resultStr += f"\t---- fortnight ----\n"
+        resultStr += f"\t- fortnight.message = {conf.fortnight.message}\n"
+        resultStr += f"\t- fortnight.week_type = {conf.fortnight.weekType}\n"
+        resultStr += f"\t- fortnight.hour = {conf.fortnight.hour}\n"
+        resultStr += f"\t- fortnight.minute = {conf.fortnight.minute}\n"
+        resultStr += f"\t- fortnight.dayOfWeek = {conf.fortnight.dayOfWeek}\n"
+        resultStr += "\n"
 
     resultStr += "\n\nNOTE: DON'T FORGET THAT IF YOU MAKE ANY CHANGE TO THE YAML FILE - YOU WILL NEED TO RESTART THIS CONTAINER!!"
     print(resultStr)
@@ -159,6 +178,47 @@ def initConfig():
                                 if reminderScheduleKey == "last_day_of_month" and reminderScheduleVal is not None:
                                     for lastDayItem in reminderScheduleVal:
                                         conf.lastDayOfMonthSchedule.append(extractLastDayOfMonthArray(lastDayItem))
+
+                        if k == "fortnight_schedule" and v is not None:
+                            fortniteSchedule = FortniteSchedule(None, None, None, None, None)
+                            for fortnightItem, reminderScheduleVal in v.items():
+                                if fortnightItem == "message":
+                                    if reminderScheduleVal != "<INPUT YOUR REMINDER HERE>":
+                                        fortniteSchedule.message = reminderScheduleVal
+                                    else:
+                                        errMsg = "ERROR: Fortnight reminder message is not setup! Put your reminder message!"
+                                        print(f"{errMsg} Now exiting!")
+                                        sys.exit()
+
+                                if fortnightItem == "week_type":
+                                    if reminderScheduleVal.lower() in ['even','odd']:
+                                        fortniteSchedule.weekType = reminderScheduleVal
+                                    else:
+                                        errMsg = "ERROR: Fortnight Week Type is not set properly! Please use EVEN or ODD values"
+                                        print(f"{errMsg} Now exiting!")
+                                        sys.exit()
+
+                                if fortnightItem == "time":
+                                    if util.isTimeFormat(reminderScheduleVal):
+                                        hour, minute = util.extractHourAndMinute(reminderScheduleVal)
+                                        fortniteSchedule.hour = hour
+                                        fortniteSchedule.minute = minute
+                                    else:
+                                        errMsg = "ERROR: Fortnight time format is not valid! Please use HH:mm format! Don't forget to wrap the time in double quotes in the yaml file"
+                                        print(f"{errMsg} Now exiting!")
+                                        sys.exit()
+
+                                if fortnightItem == "day_of_week":
+                                    if reminderScheduleVal in ["MON", "TUE", "WED", "THU", "FRI", "SAT",
+                                                               "SUN"] or reminderScheduleVal == "*":
+                                        fortniteSchedule.dayOfWeek = reminderScheduleVal
+                                    else:
+                                        errMsg = "ERROR: Fortnight schedule's day_of_week is not set properly - Please use MON, TUE, WED, THU, FRI, SAT or SUN to specify the day."
+                                        print(f"{errMsg} Now exiting!")
+                                        sys.exit()
+
+                                conf.fortnight = fortniteSchedule
+
             env = Env()
             try:
                 conf.tz = env('TZ')

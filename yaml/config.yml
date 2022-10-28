@@ -3,7 +3,7 @@ general_settings:
   discord_api_key: "<INSERT YOUR DISCORD WEBHOOK API KEY>"
 
 
-## This is the schedule when you want the script to run and call the Reminder message. You can create as many reminders as you'd like
+## This is the schedule when you want the script to run and call the Reminder message. You can create as many reminders as you'd like. Except for "fortnight"
 reminder_schedule:
   ## DELETE IF NOT NEEDED
   cron:
@@ -28,3 +28,19 @@ reminder_schedule:
 
       ## Use HH:mm format and wrap the time in quatation marks e.g. "14:28"
       time: "<HH:mm>"
+  ## DELETE IF NOT NEEDED
+
+
+fortnight_schedule:
+  message: "<INPUT YOUR REMINDER HERE>"
+
+  ## set whether to run the script on even or odd weeks - the weeks are calculated based on the iso calendar. To see the current week of the year we're in: https://www.epochconverter.com/weeknumbers
+  ## example - if we're in week 43, and you set the week_type to be even, then the reminder will be shown in weeks 44, 46, 48 etc..
+  ## available values are EVEN or ODD
+  week_type: "<EVEN/ODD>"
+
+  ## Use HH:mm format and wrap the time in quatation marks e.g. "14:28"
+  time: "<HH:mm>"
+
+  ## available values are MON, TUE, WED, THU, FRI, SAT, SUN or *
+  day_of_week: "<INPUT DAY OF WEEK HERE>"

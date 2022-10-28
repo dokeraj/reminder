@@ -1,12 +1,27 @@
 import calendar
 from datetime import datetime
+import configInit
+import util
 
 from apscheduler.schedulers.background import BlockingScheduler
 
 # Creates a default Background Scheduler
 sched = BlockingScheduler()
-import configInit
-import util
+
+
+def mainFortnight(msg, weekType, discordApiKey):
+    my_date = datetime.today()
+    year, week_num, day_of_week = my_date.isocalendar()
+
+    # check to see if the weekType is 'even' or 'odd'
+    if weekType.lower() == 'even' and week_num % 2 == 0:
+        startMainProcess(msg, discordApiKey)
+
+    elif weekType.lower() == 'odd' and week_num % 2 != 0:
+        startMainProcess(msg, discordApiKey)
+    else:
+        print(
+            f"\n\nINFO - Fortnight notification will not be pushed. Reason: The config file has been set to '{weekType}' week type and now we're in week number {week_num}.\n")
 
 
 def mainLastDayOfMonth(msg, discordApiKey):
@@ -42,7 +57,15 @@ def main():
                           hour=lastDayJob.hour, day='*', month='*',
                           day_of_week='*')
 
-    print("All setup - now waiting for the time to come to show the reminder!")
+    if config.fortnight is not None:
+        scheduler.add_job(mainFortnight,
+                          args=(config.fortnight.message, config.fortnight.weekType, config.discordApiKey),
+                          trigger='cron',
+                          minute=config.fortnight.minute,
+                          hour=config.fortnight.hour, day='*', month='*',
+                          day_of_week=config.fortnight.dayOfWeek)
+
+    print("\nAll setup - now waiting for the time to come to show the reminder!")
     scheduler.start()
 
 
